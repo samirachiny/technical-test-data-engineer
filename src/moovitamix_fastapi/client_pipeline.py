@@ -3,16 +3,12 @@ import os
 import json
 import logging
 import time
+import smtplib
+from email.message import EmailMessage
 from typing import Optional
 from pydantic import ValidationError
 from moovitamix_fastapi.classes_out import TracksOut, UsersOut, ListenHistoryOut
-
-# ------------------- CONFIGURATION -------------------
-API_URL = "http://127.0.0.1:8000"
-ENDPOINTS = ["tracks", "users", "listen_history"]
-DATA_DIR = "data"
-MAX_RETRIES = 3
-TIMEOUT = 10  # secondes
+from moovitamix_fastapi.constants import *
 
 
 # ------------------- LOGGING -------------------
@@ -29,6 +25,26 @@ SCHEMA_BY_ENDPOINT = {
     "listen_history": ListenHistoryOut
 }
 
+# ==================== NOTIFICATION EMAIL ====================
+def notify_failure(subject: str, body: str):
+    """Envoie un email de notification en cas d'échec"""
+    if not NOTIFY_EMAIL: 
+        return
+    
+    msg = EmailMessage()
+    msg.set_content(body)  
+    msg['Subject'] = subject  
+    msg['From'] = SMTP_USER 
+    msg['To'] = DEST_EMAIL  
+    
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(SMTP_USER, SMTP_PASSWORD) 
+            smtp.send_message(msg) 
+        logging.info("Notification email envoyee.")
+    except Exception as e:
+        logging.error(f"Erreur lors de l'envoi de l'email : {e}")
+
 # ------------------- FONCTIONS -------------------
 def fetch_data(endpoint: str) -> Optional[dict]:
     url = f"{API_URL}/{endpoint}"
@@ -42,8 +58,10 @@ def fetch_data(endpoint: str) -> Optional[dict]:
             logging.warning(f"[{endpoint}] Echec tentative {attempt} - {e}")
             time.sleep(2 * attempt)
     logging.error(f"[{endpoint}] Echec apres {MAX_RETRIES} tentatives.")
-    notify_failure(f"[ERREUR] Pipeline Moov AI - {endpoint}",
-                   f"Le pipeline a echoue apres {MAX_RETRIES} tentatives pour {endpoint}.")
+    notify_failure(
+    f"[ERREUR] Pipeline Moov AI - {endpoint}",
+    f"Le pipeline a échoué après {MAX_RETRIES} tentatives pour {endpoint}."
+    )
     return None
 
 def validate_items(endpoint: str, data: dict) -> bool:
