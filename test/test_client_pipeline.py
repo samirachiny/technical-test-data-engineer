@@ -1,7 +1,6 @@
 import os
 import json
 import tempfile
-import pytest
 import requests
 from unittest.mock import patch, MagicMock
 from pydantic import ValidationError
@@ -10,7 +9,6 @@ from moovitamix_fastapi.client_pipeline import (
     fetch_data,
     validate_items,
     save_to_json,
-    notify_failure,
     SCHEMA_BY_ENDPOINT,
     MAX_RETRIES
 )
