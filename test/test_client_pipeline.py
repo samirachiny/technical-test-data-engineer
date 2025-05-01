@@ -54,19 +54,16 @@ def test_validate_items_invalid():
 def test_save_to_json_creates_file():
     """Vérifie la création correcte des fichiers"""
     with tempfile.TemporaryDirectory() as tmpdir:
-        # Sauvegarde temporaire
+
         original_dir = client_pipeline.DATA_DIR
         client_pipeline.DATA_DIR = tmpdir
-        
-        # Test
+
         test_data = {"key": "value"}
         save_to_json(test_data, "test.json")
         
-        # Vérifications
         path = os.path.join(tmpdir, "test.json")
         assert os.path.exists(path)
         with open(path, "r") as f:
             assert json.load(f) == test_data
         
-        # Nettoyage
         client_pipeline.DATA_DIR = original_dir
