@@ -31,6 +31,10 @@ DEST_EMAIL = "destination@gmail.com"
 Lancer les tests unitaires
 depuis la racine du projet : pytest
 
+Pour la question 2, voici comment faire pour planifier quotidiennement le code fournie en utilisant le planificateur de tâches Windows : 
+
+- Créer une tâche dans le planificateur de tâche Windows tout les jours à 3h par exemple.
+- Mettre comme action à cette tâche le lancement de mon script en utilisant les chemins relatifs vers le dossier du projet.
 
 ## Questions (étapes 4 à 7)
 
