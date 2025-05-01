@@ -8,6 +8,6 @@ MAX_RETRIES = 3
 TIMEOUT = 10  # secondes
 
 NOTIFY_EMAIL = True
-SMTP_USER = "folefacksamira@gmail.com"  
-SMTP_PASSWORD = "xsam mamh vfzm xhac"  
-DEST_EMAIL = "samirachiny@gmail.com"
+SMTP_USER = "tonadresse@gmail.com"
+SMTP_PASSWORD = "ton_mot_de_passe_app"
+DEST_EMAIL = "destination@gmail.com"
